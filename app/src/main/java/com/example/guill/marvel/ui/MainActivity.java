@@ -13,13 +13,20 @@ import com.example.guill.marvel.R;
 import com.example.guill.marvel.adapter.HeroesAdapter;
 import com.example.guill.marvel.model.Hero;
 import com.example.guill.marvel.viewmodel.HeroesViewModel;
+import com.example.guill.marvel.viewmodel.ViewModelFactory;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     HeroesAdapter adapter;
     List<Hero> heroes;
+
+    @Inject
+    ViewModelFactory viewModelFactory;
+    HeroesViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,9 +37,11 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        HeroesViewModel model = ViewModelProviders.of(this).get(HeroesViewModel.class);
+        ((MyApp) getApplication()).getNetComponent().inject(this);
 
-        model.getHeroes().observe(this, new Observer<List<Hero>>() {
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(HeroesViewModel.class);
+
+        viewModel.getHeroes().observe(this, new Observer<List<Hero>>() {
             @Override
             public void onChanged(@Nullable List<Hero> heroList) {
                 adapter = new HeroesAdapter(MainActivity.this, heroList);

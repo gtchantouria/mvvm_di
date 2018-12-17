@@ -1,19 +1,13 @@
 package com.example.guill.marvel.viewmodel;
 
-import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
-import android.content.Context;
 
-import com.example.guill.marvel.App.MyApp;
 import com.example.guill.marvel.model.Hero;
-import com.example.guill.marvel.modules.AppModule;
 import com.example.guill.marvel.network.Api;
 
 import java.util.List;
-
-import javax.inject.Inject;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -24,9 +18,11 @@ public class HeroesViewModel extends ViewModel {
 
     //this is the data that we will fetch asynchronously
     private MutableLiveData<List<Hero>> heroList;
+    private Retrofit mRetrofit;
 
-    @Inject
-    Retrofit retrofit;
+    public HeroesViewModel (Retrofit retrofit) {
+        this.mRetrofit = retrofit;
+    }
 
     //we will call this method to get the data
     public LiveData<List<Hero>> getHeroes() {
@@ -43,7 +39,7 @@ public class HeroesViewModel extends ViewModel {
 
     //This method is using Retrofit to get the JSON data from URL
     private void loadHeroes() {
-        Api api = retrofit.create(Api.class);
+        Api api = mRetrofit.create(Api.class);
 
         Call<List<Hero>> call = api.getHeroes();
 

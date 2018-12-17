@@ -1,7 +1,9 @@
 package com.example.guill.marvel.modules;
 
 import android.app.Application;
+import android.arch.lifecycle.ViewModelProvider;
 
+import com.example.guill.marvel.viewmodel.ViewModelFactory;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -35,6 +37,7 @@ public class NetModule {
     @Singleton
     Gson provideGson() {
         GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES);
         gsonBuilder.setDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS'Z'");
         return gsonBuilder.create();
     }
@@ -55,5 +58,11 @@ public class NetModule {
                 .baseUrl(BASE_URL)
                 .client(okHttpClient)
                 .build();
+    }
+
+    @Provides
+    @Singleton
+    ViewModelProvider.Factory getViewModelFactory(Retrofit retrofit) {
+        return new ViewModelFactory(retrofit);
     }
 }
